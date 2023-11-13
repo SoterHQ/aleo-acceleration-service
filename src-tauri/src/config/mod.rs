@@ -236,3 +236,25 @@ fn set_proxy_env(proxy: &str) {
     env::set_var("https_proxy", &proxy);
     env::set_var("all_proxy", &proxy);
 }
+
+#[cfg(test)]
+mod test {
+    use std::{env, time::Duration};
+
+    use tokio::time::sleep;
+
+    #[test]
+    fn test_tokio_env() {
+        let rt = tokio::runtime::Runtime::new().unwrap();
+        let h = rt.spawn(async {
+            sleep(Duration::from_secs(1)).await;
+            let envvar = env::var("http_proxy").unwrap();
+            println!("env: {}",envvar);
+            assert_eq!(envvar,"&proxy");
+        });
+        env::set_var("http_proxy", "&proxy");
+        
+        rt.block_on(h).unwrap();
+        
+    }
+}

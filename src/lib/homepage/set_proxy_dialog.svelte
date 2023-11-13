@@ -36,7 +36,7 @@
 </script>
 
 <ContentDialog bind:open>
-  <h2 data-tauri-drag-region class="text-xl mb-4">set password</h2>
+  <h2 data-tauri-drag-region class="text-xl mb-4">set http proxy</h2>
   <p>edit proxy server</p>
 
   <div>
