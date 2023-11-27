@@ -4,7 +4,7 @@
 
 ### 1.Install aleo-acceleration-service
 
-- [Download](https://github.com/Aleo123Dev/aleo-acceleration-service/releases) the latest released version of your platform. macos(\*.dmg) windows(\*.msi)
+- [Download](https://github.com/SoterHQ/aleo-acceleration-service/releases) the latest released version of your platform. macos(\*.dmg) windows(\*.msi)
 
 #### Mac
 
@@ -26,7 +26,7 @@ Install dependent library
 `sudo apt updatesudo apt install libwebkit2gtk-4.0-dev build-essential curl wget libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev`
 
 ```shell
-git clone git@github.com:Aleo123Dev/aleo-acceleration-service.git
+git clone https://github.com/SoterHQ/aleo-acceleration-service.git
 yarn
 yarn tauri build
 yarn tauri dev
@@ -38,7 +38,7 @@ Install aleo-acc-service_0.0.x_x64_en-US.msi
 
 ### 2. Install Soter Wallet
 
-- [Download](https://github.com/aleoweb123/soter_aleo_wallet/releases) the latest released version.
+- [Download](https://github.com/SoterHQ/soter_wallet_release/releases) the latest released version.
 - Extract the v0.1.2.d.zip file.
 - Open chrome://extensions/
   <img width="1031" alt="image" src="assets/7b316dcd-3ca3-4a25-b4f3-267daccea056.png">
