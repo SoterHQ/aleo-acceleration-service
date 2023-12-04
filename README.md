@@ -38,7 +38,7 @@ Install aleo-acc-service_0.0.x_x64_en-US.msi
 
 ### 2. Install Soter Wallet
 
-- [Download]([https://github.com/SoterHQ/soter_wallet_release/releases](https://chromewebstore.google.com/detail/soter-aleo-wallet/gkodhkbmiflnmkipcmlhhgadebbeijhh?hl=zh-CN&utm_source=ext_sidebar)) 
+- [Download](https://chromewebstore.google.com/detail/soter-aleo-wallet/gkodhkbmiflnmkipcmlhhgadebbeijhh) 
 
 ### 3. Configure the ACC service
 
