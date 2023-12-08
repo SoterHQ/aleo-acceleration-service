@@ -8,7 +8,7 @@
   import Setting from "$lib/homepage/setting.svelte";
   import About from "$lib/homepage/about.svelte";
 
-  let items = ["logs", "setting", "about"];
+  let items = ["Logs", "Settings", "About"];
   let selected = items[0];
   let selectedUi: any = Log;
   let showpassdialog = false;

@@ -28,16 +28,16 @@ use tauri::{
 };
 
 use config::{get_proxy, has_password, input_password, set_password, set_proxy, try_password};
-use logger::get_logs;
+use logger::{clear_logs, get_logs};
 use os::{is_win11, os_info};
 use rpc::{run_rpc_server, stop_rpc_server};
 use service::app::{get_build_info, get_server_url};
 
-const MENU_ITEM_AUTO_START: &str = "auto_start";
-const MENU_ITEM_QUIT: &str = "quit";
-const MENU_ITEM_ABOUT: &str = "about";
-const MENUITEM_COPY_ADDR: &str = "copy server address";
-const MENUITEM_SHOW: &str = "show window";
+const MENU_ITEM_AUTO_START: &str = "Start at login";
+const MENU_ITEM_QUIT: &str = "Quit";
+const MENU_ITEM_ABOUT: &str = "About";
+const MENUITEM_COPY_ADDR: &str = "Copy server address";
+const MENUITEM_SHOW: &str = "Show window";
 
 #[derive(Clone, serde::Serialize)]
 struct Payload {
@@ -57,30 +57,33 @@ async fn main() {
         let mut buf_reader = BufReader::new(piped_stdout.get_reader());
         loop {
             let mut output = String::new();
-            std::io::BufRead::read_line(&mut buf_reader, &mut output).unwrap();
+            read_line_until_newline(&mut buf_reader, &mut output).unwrap();
             log::info!("{}", output);
         }
     });
 
-    let show = CustomMenuItem::new(MENUITEM_SHOW, "show window");
-    let copy_addr = CustomMenuItem::new(MENUITEM_COPY_ADDR, "copy server address");
-    let quit = CustomMenuItem::new(MENU_ITEM_QUIT, "Quit").accelerator("Cmd+Q");
-    let auto_start = match auto_start::AUTO_LAUNCH.as_ref() {
-        Some(v) => {
-            let enabled = v.is_enabled();
-            if enabled.is_err() {
-                CustomMenuItem::new(MENU_ITEM_AUTO_START, "Start at login").disabled()
-            } else {
-                if enabled.unwrap() {
-                    CustomMenuItem::new(MENU_ITEM_AUTO_START, "Start at login").selected()
+    let show = CustomMenuItem::new(MENUITEM_SHOW, MENUITEM_SHOW);
+    let copy_addr = CustomMenuItem::new(MENUITEM_COPY_ADDR, MENUITEM_COPY_ADDR);
+    let quit = CustomMenuItem::new(MENU_ITEM_QUIT, MENU_ITEM_QUIT).accelerator("Cmd+Q");
+    let auto_start = {
+        let item = CustomMenuItem::new(MENU_ITEM_AUTO_START, MENU_ITEM_AUTO_START);
+        match auto_start::AUTO_LAUNCH.as_ref() {
+            Some(v) => {
+                let enabled = v.is_enabled();
+                if enabled.is_err() {
+                    item.disabled()
                 } else {
-                    CustomMenuItem::new(MENU_ITEM_AUTO_START, "Start at login")
+                    if enabled.unwrap() {
+                        item.selected()
+                    } else {
+                        item
+                    }
                 }
             }
+            None => item.disabled(),
         }
-        None => CustomMenuItem::new(MENU_ITEM_AUTO_START, "Start at login").disabled(),
     };
-    let about = CustomMenuItem::new(MENU_ITEM_ABOUT, "About");
+    let about = CustomMenuItem::new(MENU_ITEM_ABOUT, MENU_ITEM_ABOUT);
 
     let system_tray_menu = SystemTrayMenu::new()
         .add_item(show)
@@ -91,6 +94,7 @@ async fn main() {
     let app = tauri::Builder::default()
         .invoke_handler(generate_handler![
             get_logs,
+            clear_logs,
             stop_rpc_server,
             run_rpc_server,
             is_win11,
@@ -313,4 +317,34 @@ fn is_another_instance_running(bundle_identifier: &str) -> Result<bool> {
         .output()?;
 
     Ok(output.status.success())
+}
+
+fn read_line_until_newline(
+    reader: &mut dyn std::io::BufRead,
+    buf: &mut String,
+) -> std::io::Result<usize> {
+    buf.clear();
+    let mut bytes_read = 0;
+    let mut byte_buf = [0; 4];
+
+    loop {
+        let num_bytes = reader.read(&mut byte_buf)?;
+        if num_bytes == 0 {
+            break;
+        }
+        bytes_read += num_bytes;
+
+        let line = String::from_utf8_lossy(&byte_buf[..num_bytes]);
+        if let Some(newline_pos) = line.find('\n') {
+            buf.push_str(&line[..newline_pos]);
+            break;
+        } else if let Some(newline_pos) = line.find('\r') {
+            buf.push_str(&line[..newline_pos]);
+            break;
+        } else {
+            buf.push_str(&line);
+        }
+    }
+
+    Ok(bytes_read)
 }

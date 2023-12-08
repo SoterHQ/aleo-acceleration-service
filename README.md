@@ -22,14 +22,8 @@ Install aleo-acc-service_x.x.x_amd64.AppImage Or aleo-acc-service_x.x.x_amd64.de
 
 2. Install from source code
 
-Install dependent library
-`sudo apt updatesudo apt install libwebkit2gtk-4.0-dev build-essential curl wget libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev`
-
 ```shell
-git clone https://github.com/SoterHQ/aleo-acceleration-service.git
-yarn
-yarn tauri build
-yarn tauri dev
+./build-linux.sh
 ```
 
 #### Windows
@@ -38,7 +32,7 @@ Install aleo-acc-service_0.0.x_x64_en-US.msi
 
 ### 2. Install Soter Wallet
 
-- [Download](https://chromewebstore.google.com/detail/soter-aleo-wallet/gkodhkbmiflnmkipcmlhhgadebbeijhh) 
+- [Download](https://chromewebstore.google.com/detail/soter-aleo-wallet/gkodhkbmiflnmkipcmlhhgadebbeijhh)
 
 ### 3. Configure the ACC service
 
@@ -47,10 +41,8 @@ Install aleo-acc-service_0.0.x_x64_en-US.msi
 - Input the service address on chrome extension:
 <img width="718" alt="image" src="https://github.com/Aleo123Dev/aleo-acceleration-service/assets/123852645/018f78de-7522-4124-b6b2-fcd0616c8496">
 
-
-
 ### 4. Now, when the method is executed, the local service will be called by default
 
 ### 5. Test Result "Send"
 
-  <img width="596" alt="image" src="assets/c1b255e4-1a65-44b6-bf70-8d680207176b.png">
+<img width="596" alt="image" src="assets/c1b255e4-1a65-44b6-bf70-8d680207176b.png">

@@ -57,3 +57,9 @@ pub fn get_logs() -> Vec<String> {
     let logs = LOGS.lock().unwrap();
     logs.to_vec()
 }
+
+#[tauri::command]
+pub fn clear_logs() {
+    let mut logs = LOGS.lock().unwrap();
+    logs.clear();
+}
