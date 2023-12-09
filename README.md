@@ -2,7 +2,11 @@
 
 ## How to install
 
-### 1.Install aleo-acceleration-service
+### 1. Install Soter Wallet
+
+- [Download](https://chromewebstore.google.com/detail/soter-aleo-wallet/gkodhkbmiflnmkipcmlhhgadebbeijhh)
+
+### 2.Install aleo-acceleration-service
 
 - [Download](https://github.com/SoterHQ/aleo-acceleration-service/releases) the latest released version of your platform. macos(\*.dmg) windows(\*.msi)
 
@@ -29,10 +33,6 @@ Install aleo-acc-service_x.x.x_amd64.AppImage Or aleo-acc-service_x.x.x_amd64.de
 #### Windows
 
 Install aleo-acc-service_0.0.x_x64_en-US.msi
-
-### 2. Install Soter Wallet
-
-- [Download](https://chromewebstore.google.com/detail/soter-aleo-wallet/gkodhkbmiflnmkipcmlhhgadebbeijhh)
 
 ### 3. Configure the ACC service
 
