@@ -1,6 +1,9 @@
 use anyhow::Result;
 use serde::Serialize;
-use std::sync::{Arc, Mutex};
+use std::{
+    process::exit,
+    sync::{Arc, Mutex},
+};
 use tauri::{api::dialog, Manager};
 
 use lazy_static::lazy_static;
@@ -69,4 +72,13 @@ pub fn get_build_info() -> BuildInfo {
     let time = BUILD_TIME.to_string();
 
     BuildInfo { time, commit }
+}
+
+pub fn error_dialog(message: &str) {
+    dialog::blocking::message(
+        get_app_handle().get_window("main").as_ref(),
+        "error",
+        message,
+    );
+    exit(1)
 }

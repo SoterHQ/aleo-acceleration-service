@@ -200,7 +200,7 @@ pub fn start_hyper(address: &SocketAddr) -> Sender<()> {
     tokio::spawn(async {
         // Start the server
         if let Err(err) = graceful.await {
-            eprintln!("Server error: {}", err);
+            crate::service::app::error_dialog(&format!("server error: {}", err));
         }
     });
 

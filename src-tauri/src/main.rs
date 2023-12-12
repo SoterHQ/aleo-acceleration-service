@@ -297,10 +297,8 @@ async fn main() {
     }
 
     #[cfg(target_os = "macos")]
-    if let Ok(running) = is_another_instance_running(&app.config().tauri.bundle.identifier) {
-        if running {
-            return;
-        }
+    if let Ok(true) = is_another_instance_running(&app.config().tauri.bundle.identifier) {
+        return;
     }
 
     _ = config::init();
@@ -309,6 +307,7 @@ async fn main() {
     app.run(|app, event| {});
 }
 
+#[cfg(target_os = "macos")]
 fn is_another_instance_running(bundle_identifier: &str) -> Result<bool> {
     let output = Command::new("pgrep")
         .arg("-x")
@@ -319,6 +318,7 @@ fn is_another_instance_running(bundle_identifier: &str) -> Result<bool> {
     Ok(output.status.success())
 }
 
+#[cfg(not(target_os = "windows"))]
 fn read_line_until_newline(
     reader: &mut dyn std::io::BufRead,
     buf: &mut String,
