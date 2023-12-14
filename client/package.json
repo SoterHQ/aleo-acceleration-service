@@ -1,5 +1,5 @@
 {
-  "name": "@aleo123dev/aleo-acc-client",
+  "name": "@soterhq/aleo-acc-client",
   "version": "0.0.9",
   "description": "A template for creating npm packages using TypeScript and VSCode",
   "main": "./lib/index.js",
@@ -18,21 +18,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Aleo123Dev/aleo-acceleration-service.git",
+    "url": "https://github.com/SoterHQ/aleo-acceleration-service.git",
     "directory": "client"
   },
   "license": "MIT",
   "author": {
-    "name": "aleo123Dev",
-    "url": "https://aleo123.io"
+    "name": "SoterHQ",
+    "url": "https://github.com/SoterHQ"
   },
   "keywords": [
     "aleo"
   ],
   "bugs": {
-    "url": "https://github.com/Aleo123Dev/aleo-acceleration-service/issues"
+    "url": "https://github.com/SoterHQ/aleo-acceleration-service/issues"
   },
-  "homepage": "https://github.com/Aleo123Dev/aleo-acceleration-service#readme",
+  "homepage": "https://github.com/SoterHQ/aleo-acceleration-service#readme",
   "devDependencies": {
     "typescript": "^4.2.4",
     "ts-node": "^10.2.1"

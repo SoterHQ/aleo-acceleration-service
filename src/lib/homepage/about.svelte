@@ -29,8 +29,8 @@
     sourcecode:
     <a
       on:click={() =>
-        shell.open("https://github.com/Aleo123Dev/aleo-acceleration-service")}
-      >https://github.com/Aleo123Dev/aleo-acceleration-service</a
+        shell.open("https://github.com/SoterHQ/aleo-acceleration-service")}
+      >https://github.com/SoterHQ/aleo-acceleration-service</a
     >
   </p>
 </div>
