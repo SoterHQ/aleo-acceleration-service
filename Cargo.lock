@@ -74,7 +74,7 @@ dependencies = [
 
 [[package]]
 name = "aleo-acc-service"
-version = "0.0.10"
+version = "0.0.11"
 dependencies = [
  "aes-gcm",
  "aleowrap",
@@ -178,6 +178,7 @@ dependencies = [
  "anyhow",
  "js-sys",
  "rand 0.8.5",
+ "rayon",
  "serde",
  "serde_json",
  "snarkvm-circuit",

@@ -12,6 +12,7 @@ import {
   JsonRpcRequest,
   DeploymentCostParams,
   ExecutionCostParams,
+  DecryptRecordsParams,
 } from './types';
 import { bytesToHex, hexToBytes } from '@noble/curves/abstract/utils';
 
@@ -46,7 +47,7 @@ export class Client {
     let serverConf = await Client.checkService(serverurl.toString());
 
     if (serverConf.result.version) {
-      if (compareVersions(serverConf.result.version, '0.0.9') < 0) {
+      if (compareVersions(serverConf.result.version, '0.0.11') < 0) {
         throw 'server version is too old: ' + serverConf.result.version;
       }
     } else {
@@ -151,6 +152,16 @@ export class Client {
   async execution_cost(params: ExecutionCostParams) {
     let resp = await this.fetch({
       method: 'execution_cost',
+      params: Object.values(params),
+      jsonrpc: '2.0',
+      id: 1,
+    });
+    return resp.json();
+  }
+
+  async decrypt_records(params: DecryptRecordsParams) {
+    let resp = await this.fetch({
+      method: 'decrypt_records',
       params: Object.values(params),
       jsonrpc: '2.0',
       id: 1,

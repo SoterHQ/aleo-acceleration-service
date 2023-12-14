@@ -57,6 +57,11 @@ export interface ExecutionCostParams {
   query?: string,
 }
 
+export interface DecryptRecordsParams {
+  private_key: string,
+  records: string[],
+}
+
 export interface JsonRpcResult<T> {
   jsonrpc: string;
   result: T;

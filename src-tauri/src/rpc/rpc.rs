@@ -106,6 +106,9 @@ pub trait Rpc {
         query: Option<String>,
     ) -> Result<String>;
 
+    #[rpc(name = "decrypt_records")]
+    fn decrypt_records(&self, private_key: String, records: Vec<String>) -> Result<Vec<String>>;
+
     #[rpc(name = "discovery")]
     fn discovery(&self) -> Result<Discovery>;
 }
@@ -235,7 +238,7 @@ impl Rpc for RpcImpl {
         log::info!(target: "rpc","executing rpc method 'deployment_cost'");
         call_aleo_function!(deployment_cost(&program, imports))
             .to_jsonrpc_result()
-            .log_rpc_error("split")
+            .log_rpc_error("deployment_cost")
     }
 
     fn execution_cost(
@@ -255,7 +258,14 @@ impl Rpc for RpcImpl {
             query.as_deref()
         ))
         .to_jsonrpc_result()
-        .log_rpc_error("split")
+        .log_rpc_error("execution_cost")
+    }
+
+    fn decrypt_records(&self, private_key: String, records: Vec<String>) -> Result<Vec<String>> {
+        log::info!(target: "rpc","executing rpc method 'decrypt_records'");
+        call_aleo_function!(decrypt_records(&private_key, records))
+            .to_jsonrpc_result()
+            .log_rpc_error("decrypt_records")
     }
 
     fn discovery(&self) -> Result<Discovery> {
