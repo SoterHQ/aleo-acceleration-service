@@ -23,16 +23,20 @@ export class Client {
   serverurl: string;
   serverPubKey: Uint8Array;
 
+  features: string[];
+
   private constructor(
     privateKey: Uint8Array,
     publicKey: Uint8Array,
     serverurl: string,
-    serverPubKey: Uint8Array
+    serverPubKey: Uint8Array,
+    features: string[],
   ) {
     this.privateKey = privateKey;
     this.publicKey = publicKey;
     this.serverurl = serverurl;
     this.serverPubKey = serverPubKey;
+    this.features = features;
   }
 
   public static async new(
@@ -70,7 +74,7 @@ export class Client {
       throw 'json rpc error';
     }
 
-    return new Client(privateKey, publicKey, serverurl.toString(), serverPubKey);
+    return new Client(privateKey, publicKey, serverurl.toString(), serverPubKey, serverConf.result.features);
   }
 
   static async checkService(
@@ -90,6 +94,10 @@ export class Client {
   }
 
   async deploy(params: DeployParams) {
+    if (this.features.find((v) => v == "deploy") == undefined) {
+      throw "server not implemented!"
+    }
+
     let resp = await this.fetch({
       method: 'deploy',
       params: Object.values(params),
@@ -100,6 +108,9 @@ export class Client {
   }
 
   async execute(params: ExecuteParams) {
+    if (this.features.find((v) => v == "execute") == undefined) {
+      throw "server not implemented!"
+    }
     let resp = await this.fetch({
       method: 'execute',
       params: Object.values(params),
@@ -110,6 +121,9 @@ export class Client {
   }
 
   async transfer(params: TransferParams) {
+    if (this.features.find((v) => v == "transfer") == undefined) {
+      throw "server not implemented!"
+    }
     let resp = await this.fetch({
       method: 'transfer',
       params: Object.values(params),
@@ -120,6 +134,9 @@ export class Client {
   }
 
   async join(params: JoinParams) {
+    if (this.features.find((v) => v == "join") == undefined) {
+      throw "server not implemented!"
+    }
     let resp = await this.fetch({
       method: 'join',
       params: Object.values(params),
@@ -130,6 +147,9 @@ export class Client {
   }
 
   async split(params: SplitParams) {
+    if (this.features.find((v) => v == "split") == undefined) {
+      throw "server not implemented!"
+    }
     let resp = await this.fetch({
       method: 'split',
       params: Object.values(params),
@@ -140,6 +160,9 @@ export class Client {
   }
 
   async deployment_cost(params: DeploymentCostParams) {
+    if (this.features.find((v) => v == "deployment_cost") == undefined) {
+      throw "server not implemented!"
+    }
     let resp = await this.fetch({
       method: 'deployment_cost',
       params: Object.values(params),
@@ -150,6 +173,9 @@ export class Client {
   }
 
   async execution_cost(params: ExecutionCostParams) {
+    if (this.features.find((v) => v == "execution_cost") == undefined) {
+      throw "server not implemented!"
+    }
     let resp = await this.fetch({
       method: 'execution_cost',
       params: Object.values(params),
@@ -160,6 +186,9 @@ export class Client {
   }
 
   async decrypt_records(params: DecryptRecordsParams) {
+    if (this.features.find((v) => v == "decrypt_records") == undefined) {
+      throw "server not implemented!"
+    }
     let resp = await this.fetch({
       method: 'decrypt_records',
       params: Object.values(params),

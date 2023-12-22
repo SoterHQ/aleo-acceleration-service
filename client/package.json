@@ -1,6 +1,6 @@
 {
   "name": "@soterhq/aleo-acc-client",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "A template for creating npm packages using TypeScript and VSCode",
   "main": "./lib/index.js",
   "publishConfig": {

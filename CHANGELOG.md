@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.12]
+
+### Bug Fixes
+
+- Add decrypt_records feature to discovery
+
+### Client
+
+- Check features
+
 ## [0.0.11] - 2023-12-14
 
 ### Bug Fixes
@@ -12,6 +22,10 @@ All notable changes to this project will be documented in this file.
 
 - Server error dialog
 - Decrypt records
+
+### Release
+
+- 0.0.11
 
 ## [0.0.10] - 2023-12-08
 

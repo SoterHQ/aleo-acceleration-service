@@ -281,6 +281,7 @@ impl Rpc for RpcImpl {
                 "split".to_string(),
                 "deployment_cost".to_string(),
                 "execution_cost".to_string(),
+                "decrypt_records".to_string(),
             ],
             pubkey: hex::encode(tls::get_p256_pubkey(&client_secret)),
         })
