@@ -37,9 +37,11 @@ Install aleo-acc-service_0.0.x_x64_en-US.msi
 ### 3. Configure the ACC service
 
 - Copy `server url` from ACC service, for example: `http://36604057fe67563e8e162f935a5c2fe1576adf4be5d8a322c5fd39e25c675ebb@127.0.0.1:18340`
-<img width="800" alt="image" src="assets/Snipaste_2023-10-20_17-18-14.png">
+<img width="793" alt="image" src="https://github.com/SoterHQ/aleo-acceleration-service/assets/148941726/3123ca79-6ea9-4551-b6a6-3c40ddba3432">
+
 - Input the service address on chrome extension:
-<img width="718" alt="image" src="https://github.com/Aleo123Dev/aleo-acceleration-service/assets/123852645/018f78de-7522-4124-b6b2-fcd0616c8496">
+<img width="606" alt="image" src="https://github.com/SoterHQ/aleo-acceleration-service/assets/148941726/81b5c1a8-f75f-4f2f-8023-700edbc15567">
+
 
 ### 4. Now, when the method is executed, the local service will be called by default
 
