@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <!-- these registry entries should be installed
+         to the target user's machine -->
+    <DirectoryRef Id="TARGETDIR">
+      <!-- groups together the registry entries to be installed -->
+      <!-- Note the unique `Id` we provide here -->
+      <Component Id="MyFragmentRegistryEntries" Guid="*">
+        <!-- the registry key will be under
+             HKEY_CURRENT_USER\Software\MyCompany\MyApplicationName -->
+        <!-- Tauri uses the second portion of the
+             bundle identifier as the `MyCompany` name
+             (e.g. `tauri-apps` in `com.tauri-apps.test`)  -->
+        <RegistryKey
+          Root="HKCU"
+          Key="Software\Classes\aleoacc"
+          Action="createAndRemoveOnUninstall"
+        >
+          <!-- values to persist on the registry -->
+          <RegistryValue
+            Type="string"
+            Name="URL Protocol"
+            Value=""
+            KeyPath="yes"
+          />
+          <RegistryValue Type="string" Value="URL:aleoacc" />
+        </RegistryKey>
+        <RegistryKey
+        Root="HKCU"
+        Key="Software\Classes\aleoacc\shell\open\command"
+        Action="createAndRemoveOnUninstall"
+      >
+        <RegistryValue Type="string" Value="[INSTALLDIR]aleo-acc-service.exe '%1'" />
+      </RegistryKey>
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

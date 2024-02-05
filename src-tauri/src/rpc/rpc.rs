@@ -96,10 +96,9 @@ pub trait Rpc {
         imports: Option<HashMap<String, String>>,
     ) -> Result<String>;
 
-    #[rpc(name = "execution_cost")]
+    #[rpc(name = "execution_costv2")]
     fn execution_cost(
         &self,
-        private_key: String,
         program_id: String,
         function: String,
         inputs: Vec<String>,
@@ -108,6 +107,25 @@ pub trait Rpc {
 
     #[rpc(name = "decrypt_records")]
     fn decrypt_records(&self, private_key: String, records: Vec<String>) -> Result<Vec<String>>;
+
+    #[rpc(name = "transaction_from_authorization")]
+    fn transaction_from_authorization(
+        &self,
+        program_id: String,
+        execute_authorization_str: String,
+        fee_authorization_str: String,
+        query: Option<String>,
+    ) -> Result<String>;
+
+    #[rpc(name = "deploy_from_authorization")]
+    fn deploy_from_authorization(
+        &self,
+        program: String,
+        imports: Option<HashMap<String, String>>,
+        owner_str: String,
+        fee_authorization_str: String,
+        query: Option<String>,
+    ) -> Result<String>;
 
     #[rpc(name = "discovery")]
     fn discovery(&self) -> Result<Discovery>;
@@ -243,7 +261,6 @@ impl Rpc for RpcImpl {
 
     fn execution_cost(
         &self,
-        private_key: String,
         program_id: String,
         function: String,
         inputs: Vec<String>,
@@ -251,7 +268,6 @@ impl Rpc for RpcImpl {
     ) -> Result<String> {
         log::info!(target: "rpc","executing rpc method 'execution_cost'");
         call_aleo_function!(execution_cost(
-            &private_key,
             &program_id,
             &function,
             inputs,
@@ -268,6 +284,44 @@ impl Rpc for RpcImpl {
             .log_rpc_error("decrypt_records")
     }
 
+    fn transaction_from_authorization(
+        &self,
+        program_id: String,
+        execute_authorization_str: String,
+        fee_authorization_str: String,
+        query: Option<String>,
+    ) -> Result<String> {
+        log::info!(target: "rpc","executing rpc method 'transaction_from_authorization'");
+        call_aleo_function!(transaction_for_authorize(
+            &program_id,
+            &execute_authorization_str,
+            &fee_authorization_str,
+            query.as_deref()
+        ))
+        .to_jsonrpc_result()
+        .log_rpc_error("transaction_from_authorization")
+    }
+
+    fn deploy_from_authorization(
+        &self,
+        program: String,
+        imports: Option<HashMap<String, String>>,
+        owner_str: String,
+        fee_authorization_str: String,
+        query: Option<String>,
+    ) -> Result<String> {
+        log::info!(target: "rpc","executing rpc method 'deploy_from_authorization'");
+        call_aleo_function!(deploy_for_authorize(
+            &program,
+            imports,
+            &owner_str,
+            &fee_authorization_str,
+            query.as_deref()
+        ))
+        .to_jsonrpc_result()
+        .log_rpc_error("deploy_from_authorization")
+    }
+
     fn discovery(&self) -> Result<Discovery> {
         log::info!(target: "rpc","executing rpc method 'discovery'");
         let client_secret = Config::get_config().get_secret_key().to_jsonrpc_result()?;
@@ -280,8 +334,10 @@ impl Rpc for RpcImpl {
                 "join".to_string(),
                 "split".to_string(),
                 "deployment_cost".to_string(),
-                "execution_cost".to_string(),
+                "execution_costv2".to_string(),
                 "decrypt_records".to_string(),
+                "transaction_from_authorization".to_string(),
+                "deploy_from_authorization".to_string(),
             ],
             pubkey: hex::encode(tls::get_p256_pubkey(&client_secret)),
         })

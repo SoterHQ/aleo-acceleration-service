@@ -1,6 +1,9 @@
 git submodule update --init
-sudo apt-get install -y librocksdb-dev \
-    libssl3-dev \
+sudo apt install -y build-essential
+sudo apt-get install -y \
+    llvm \
+    clang \
+    librocksdb-dev \
     libxcb-shape0-dev \
     libxcb-xfixes0-dev \
     libc6-dev \

@@ -13,6 +13,8 @@ import {
   DeploymentCostParams,
   ExecutionCostParams,
   DecryptRecordsParams,
+  TransactionFromAuthorizationParams,
+  DeployFromAuthorizationParams,
 } from './types';
 import { bytesToHex, hexToBytes } from '@noble/curves/abstract/utils';
 
@@ -51,7 +53,7 @@ export class Client {
     let serverConf = await Client.checkService(serverurl.toString());
 
     if (serverConf.result.version) {
-      if (compareVersions(serverConf.result.version, '0.0.11') < 0) {
+      if (compareVersions(serverConf.result.version, '0.0.13') < 0) {
         throw 'server version is too old: ' + serverConf.result.version;
       }
     } else {
@@ -173,11 +175,11 @@ export class Client {
   }
 
   async execution_cost(params: ExecutionCostParams) {
-    if (this.features.find((v) => v == "execution_cost") == undefined) {
+    if (this.features.find((v) => v == "execution_costv2") == undefined) {
       throw "server not implemented!"
     }
     let resp = await this.fetch({
-      method: 'execution_cost',
+      method: 'execution_costv2',
       params: Object.values(params),
       jsonrpc: '2.0',
       id: 1,
@@ -191,6 +193,32 @@ export class Client {
     }
     let resp = await this.fetch({
       method: 'decrypt_records',
+      params: Object.values(params),
+      jsonrpc: '2.0',
+      id: 1,
+    });
+    return resp.json();
+  }
+
+  async transaction_from_authorization(params: TransactionFromAuthorizationParams) {
+    if (this.features.find((v) => v == "transaction_from_authorization") == undefined) {
+      throw "server not implemented!"
+    }
+    let resp = await this.fetch({
+      method: 'transaction_from_authorization',
+      params: Object.values(params),
+      jsonrpc: '2.0',
+      id: 1,
+    });
+    return resp.json();
+  }
+
+  async deploy_from_authorization(params: DeployFromAuthorizationParams) {
+    if (this.features.find((v) => v == "deploy_from_authorization") == undefined) {
+      throw "server not implemented!"
+    }
+    let resp = await this.fetch({
+      method: 'deploy_from_authorization',
       params: Object.values(params),
       jsonrpc: '2.0',
       id: 1,

@@ -63,13 +63,10 @@ pub struct BuildInfo {
     pub commit: String,
 }
 
-pub const BUILD_TIME: &str = include_str!(concat!(env!("OUT_DIR"), "/build_time"));
-pub const GIT_COMMIT: &str = include_str!(concat!(env!("OUT_DIR"), "/git_commit"));
-
 #[tauri::command]
 pub fn get_build_info() -> BuildInfo {
-    let commit = GIT_COMMIT.to_string();
-    let time = BUILD_TIME.to_string();
+    let commit = env!("git_commit").to_string();
+    let time = env!("build_time").to_string();
 
     BuildInfo { time, commit }
 }

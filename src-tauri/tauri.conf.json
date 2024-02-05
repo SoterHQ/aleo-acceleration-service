@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "aleo-acc-service",
-    "version": "0.0.12"
+    "version": "0.0.13"
   },
   "tauri": {
     "allowlist": {
@@ -61,12 +61,17 @@
       "deb": {
         "depends": [
           "librocksdb-dev",
-          "libssl3",
           "libxcb-shape0",
           "libxcb-xfixes0",
           "libc6",
           "libstdc++6"
         ]
+      },
+      "windows": {
+        "wix": {
+          "fragmentPaths": ["registry.wxs"],
+          "componentRefs": ["MyFragmentRegistryEntries"]
+        }
       }
     },
     "security": {

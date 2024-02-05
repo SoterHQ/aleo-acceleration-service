@@ -68,6 +68,18 @@ pub fn get_proxy() -> Result<Option<String>, String> {
     Ok(proxy)
 }
 
+#[tauri::command]
+pub async fn test_proxy(proxy: String) -> Result<(), String> {
+    let mut easy = curl::easy::Easy::new();
+    easy.proxy(&proxy)
+        .map_err(|e| format!("failed to set proxy: {}", e))?;
+    _ = easy.url("https://cp.cloudflare.com");
+
+    easy.perform()
+        .map_err(|e| format!("failed to perform request: {}", e))?;
+    return Ok(());
+}
+
 #[derive(Clone)]
 pub struct Config {
     pub db: Option<Arc<rocksdb::DB>>,
@@ -203,6 +215,9 @@ impl Config {
 
     pub fn set_proxy(&self, proxy: &str) -> Result<()> {
         let db = self.db.clone().context("cant get db")?;
+        if proxy.is_empty() {
+            return db.delete("proxy").context("cant delete proxy");
+        }
         db.put("proxy", proxy).context("cant write to db")
     }
 
@@ -243,18 +258,31 @@ mod test {
 
     use tokio::time::sleep;
 
+    use super::set_proxy_env;
+
     #[test]
     fn test_tokio_env() {
         let rt = tokio::runtime::Runtime::new().unwrap();
         let h = rt.spawn(async {
             sleep(Duration::from_secs(1)).await;
             let envvar = env::var("http_proxy").unwrap();
-            println!("env: {}",envvar);
-            assert_eq!(envvar,"&proxy");
+            println!("env: {}", envvar);
+            assert_eq!(envvar, "&proxy");
         });
         env::set_var("http_proxy", "&proxy");
-        
+
         rt.block_on(h).unwrap();
-        
+    }
+
+    #[test]
+    fn test_proxy() {
+        let proxy = "http://127.0.0.1:7890";
+        set_proxy_env(proxy);
+        let mut easy = curl::easy::Easy::new();
+        _ = easy.url("https://www.google.com/generate_204");
+
+        easy.perform()
+            .map_err(|e| format!("failed to perform request: {}", e))
+            .unwrap();
     }
 }

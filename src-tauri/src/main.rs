@@ -27,7 +27,9 @@ use tauri::{
     generate_handler, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
 };
 
-use config::{get_proxy, has_password, input_password, set_password, set_proxy, try_password};
+use config::{
+    get_proxy, has_password, input_password, set_password, set_proxy, test_proxy, try_password,
+};
 use logger::{clear_logs, get_logs};
 use os::{is_win11, os_info};
 use rpc::{run_rpc_server, stop_rpc_server};
@@ -49,6 +51,9 @@ struct Payload {
 async fn main() {
     logger::setup_logger();
     log::info!("app started!");
+
+    #[cfg(target_os = "linux")]
+    tauri_plugin_deep_link::prepare("us.engy.focus-repro");
 
     #[cfg(not(target_os = "windows"))]
     tokio::spawn(async {
@@ -101,6 +106,7 @@ async fn main() {
             os_info,
             set_proxy,
             get_proxy,
+            test_proxy,
             get_server_url,
             get_build_info,
             has_password,
@@ -116,6 +122,24 @@ async fn main() {
         }))
         .system_tray(SystemTray::new().with_menu(system_tray_menu))
         .setup(|app| {
+
+            #[cfg(target_os="linux")]
+            {
+                let handle = app.handle();
+                tauri_plugin_deep_link::register(
+                    "aleoacc",
+                    move |request| {
+                        println!("Activated from second instance: {}", request);
+                        if let Some(main_window) = handle.get_window("main") {
+                            if let Err(err) = main_window.set_focus() {
+                                eprintln!("Could not set focus on main window: {:?}", err);
+                            }
+                        }
+                    },
+                )
+                .unwrap(/* If listening to the scheme is optional for your app, you don't want to unwrap here. */);
+            }
+
             // hide dock icon on macOS
             #[cfg(target_os = "macos")]
             app.set_activation_policy(tauri::ActivationPolicy::Accessory);

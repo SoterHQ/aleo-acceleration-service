@@ -1,7 +1,7 @@
 [package]
 name = "aleo-acc-service"
-version = "0.0.12"
-description = "A Tauri App"
+version = "0.0.13"
+description = "aleo-acc-service"
 authors = ["you"]
 license = ""
 repository = ""
@@ -58,12 +58,17 @@ window-vibrancy = "0.4.2"
 clipboard-ext = "0.2.0"
 secure-string = "0.3.0"
 dirs-next = "2.0.0"
+openssl-sys = { version = "*",features = ["vendored"] }
+curl = "0.4.44"
 
 [dev-dependencies]
 
 
 [target.'cfg(not(target_os = "windows"))'.dependencies]
 capture-stdio = "0.1.1"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+tauri-plugin-deep-link = "0.1.2"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
