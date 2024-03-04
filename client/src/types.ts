@@ -2,7 +2,7 @@ export interface DeployParams {
   private_key: string;
   program: string;
   fee_record?: string;
-  imports?: object;
+  imports?: { [key: string]: string };
   priority_fee_in_microcredits?: number;
   query?: string;
 }
@@ -13,7 +13,7 @@ export interface ExecuteParams {
   function: string;
   inputs: string[];
   fee_record?: string
-  imports?: object;
+  imports?: { [key: string]: string };
   fee?: number;
   query?: string;
 }
@@ -47,7 +47,7 @@ export interface SplitParams {
 
 export interface DeploymentCostParams {
   program: String,
-  imports?: Map<string, string>,
+  imports?: { [key: string]: string },
 }
 
 export interface ExecutionCostParams {
@@ -58,7 +58,7 @@ export interface ExecutionCostParams {
 }
 
 export interface DecryptRecordsParams {
-  private_key: string,
+  view_key: string,
   records: string[],
 }
 
@@ -71,10 +71,14 @@ export interface TransactionFromAuthorizationParams {
 
 export interface DeployFromAuthorizationParams {
   program: string,
-  imports?: Map<string, string>,
+  imports?: { [key: string]: string },
   owner_str: string,
   fee_authorization_str: string,
   query?: string,
+}
+
+export interface UpdateParams {
+  version: string;
 }
 
 export interface JsonRpcResult<T> {

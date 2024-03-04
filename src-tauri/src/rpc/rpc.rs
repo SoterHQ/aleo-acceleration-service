@@ -6,7 +6,7 @@ use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use std::time::Instant;
 
-use crate::{config::Config, tls};
+use crate::{config::Config, service::app::update_dialog, tls};
 
 macro_rules! call_aleo_function {
     ($func:ident($($arg:expr),*)) => {
@@ -105,8 +105,8 @@ pub trait Rpc {
         query: Option<String>,
     ) -> Result<String>;
 
-    #[rpc(name = "decrypt_records")]
-    fn decrypt_records(&self, private_key: String, records: Vec<String>) -> Result<Vec<String>>;
+    #[rpc(name = "decrypt_recordsv2")]
+    fn decrypt_records(&self, view_key: String, records: Vec<String>) -> Result<Vec<String>>;
 
     #[rpc(name = "transaction_from_authorization")]
     fn transaction_from_authorization(
@@ -129,6 +129,9 @@ pub trait Rpc {
 
     #[rpc(name = "discovery")]
     fn discovery(&self) -> Result<Discovery>;
+
+    #[rpc(name = "update")]
+    fn update(&self, version: String) -> Result<()>;
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -277,9 +280,9 @@ impl Rpc for RpcImpl {
         .log_rpc_error("execution_cost")
     }
 
-    fn decrypt_records(&self, private_key: String, records: Vec<String>) -> Result<Vec<String>> {
+    fn decrypt_records(&self, view_key: String, records: Vec<String>) -> Result<Vec<String>> {
         log::info!(target: "rpc","executing rpc method 'decrypt_records'");
-        call_aleo_function!(decrypt_records(&private_key, records))
+        call_aleo_function!(decrypt_records(&view_key, records))
             .to_jsonrpc_result()
             .log_rpc_error("decrypt_records")
     }
@@ -335,12 +338,19 @@ impl Rpc for RpcImpl {
                 "split".to_string(),
                 "deployment_cost".to_string(),
                 "execution_costv2".to_string(),
-                "decrypt_records".to_string(),
+                "decrypt_recordsv2".to_string(),
                 "transaction_from_authorization".to_string(),
                 "deploy_from_authorization".to_string(),
+                "update".to_string(),
             ],
             pubkey: hex::encode(tls::get_p256_pubkey(&client_secret)),
         })
+    }
+
+    fn update(&self, version: String) -> Result<()> {
+        log::info!(target: "rpc","executing rpc method 'update'");
+        update_dialog(&version);
+        Ok(())
     }
 }
 

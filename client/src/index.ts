@@ -15,8 +15,29 @@ import {
   DecryptRecordsParams,
   TransactionFromAuthorizationParams,
   DeployFromAuthorizationParams,
+  UpdateParams,
 } from './types';
 import { bytesToHex, hexToBytes } from '@noble/curves/abstract/utils';
+
+export class VersionIncompatibleError extends Error {
+  requiredVersion: string;
+  version: string;
+  constructor(message: string, version: string, requiredVersion: string) {
+    super(message);
+    this.version = version;
+    this.requiredVersion = requiredVersion;
+  }
+}
+
+export class NoVersionError extends Error { }
+
+export class NotImplementedError extends Error {
+  func: string;
+  constructor(func: string) {
+    super(`function ${func} not implemented!`);
+    this.func = func;
+  }
+}
 
 export * from './types';
 export class Client {
@@ -41,6 +62,20 @@ export class Client {
     this.features = features;
   }
 
+  public static is_version_incompatible_error(error: any): boolean {
+    return error instanceof VersionIncompatibleError
+  }
+
+  public static is_no_version_error(error: any): boolean {
+    return error instanceof NoVersionError
+  }
+
+  public static is_not_implemented_error(error: any): boolean {
+    return error instanceof NotImplementedError
+  }
+
+  public static minimumVersion: string = '0.0.14'
+
   public static async new(
     serverurl: URL
   ) {
@@ -52,12 +87,8 @@ export class Client {
 
     let serverConf = await Client.checkService(serverurl.toString());
 
-    if (serverConf.result.version) {
-      if (compareVersions(serverConf.result.version, '0.0.13') < 0) {
-        throw 'server version is too old: ' + serverConf.result.version;
-      }
-    } else {
-      throw 'cant get server version';
+    if (!serverConf.result.version) {
+      throw new NoVersionError('no version found');
     }
 
     let serverPubKey;
@@ -95,13 +126,20 @@ export class Client {
     return digest_hex;
   }
 
-  async deploy(params: DeployParams) {
-    if (this.features.find((v) => v == "deploy") == undefined) {
-      throw "server not implemented!"
+  async checkVersion() {
+    let serverConf = await Client.checkService(this.serverurl);
+    if (compareVersions(serverConf.result.version, Client.minimumVersion) < 0) {
+      throw new VersionIncompatibleError('server version is too old', serverConf.result.version, Client.minimumVersion);
     }
+  }
 
+  async deploy(params: DeployParams) {
+    const func = "deploy"
+    if (this.features.find((v) => v == func) == undefined) {
+      throw new NotImplementedError(func)
+    }
     let resp = await this.fetch({
-      method: 'deploy',
+      method: func,
       params: Object.values(params),
       jsonrpc: '2.0',
       id: 1,
@@ -110,11 +148,12 @@ export class Client {
   }
 
   async execute(params: ExecuteParams) {
-    if (this.features.find((v) => v == "execute") == undefined) {
-      throw "server not implemented!"
+    const func = "execute"
+    if (this.features.find((v) => v == func) == undefined) {
+      throw new NotImplementedError(func)
     }
     let resp = await this.fetch({
-      method: 'execute',
+      method: func,
       params: Object.values(params),
       jsonrpc: '2.0',
       id: 1,
@@ -123,11 +162,12 @@ export class Client {
   }
 
   async transfer(params: TransferParams) {
-    if (this.features.find((v) => v == "transfer") == undefined) {
-      throw "server not implemented!"
+    const func = "transfer"
+    if (this.features.find((v) => v == func) == undefined) {
+      throw new NotImplementedError(func)
     }
     let resp = await this.fetch({
-      method: 'transfer',
+      method: func,
       params: Object.values(params),
       jsonrpc: '2.0',
       id: 1,
@@ -136,11 +176,12 @@ export class Client {
   }
 
   async join(params: JoinParams) {
-    if (this.features.find((v) => v == "join") == undefined) {
-      throw "server not implemented!"
+    const func = "join"
+    if (this.features.find((v) => v == func) == undefined) {
+      throw new NotImplementedError(func)
     }
     let resp = await this.fetch({
-      method: 'join',
+      method: func,
       params: Object.values(params),
       jsonrpc: '2.0',
       id: 1,
@@ -149,11 +190,12 @@ export class Client {
   }
 
   async split(params: SplitParams) {
-    if (this.features.find((v) => v == "split") == undefined) {
-      throw "server not implemented!"
+    const func = "split"
+    if (this.features.find((v) => v == func) == undefined) {
+      throw new NotImplementedError(func)
     }
     let resp = await this.fetch({
-      method: 'split',
+      method: func,
       params: Object.values(params),
       jsonrpc: '2.0',
       id: 1,
@@ -162,11 +204,12 @@ export class Client {
   }
 
   async deployment_cost(params: DeploymentCostParams) {
-    if (this.features.find((v) => v == "deployment_cost") == undefined) {
-      throw "server not implemented!"
+    const func = "deployment_cost"
+    if (this.features.find((v) => v == func) == undefined) {
+      throw new NotImplementedError(func)
     }
     let resp = await this.fetch({
-      method: 'deployment_cost',
+      method: func,
       params: Object.values(params),
       jsonrpc: '2.0',
       id: 1,
@@ -175,11 +218,12 @@ export class Client {
   }
 
   async execution_cost(params: ExecutionCostParams) {
-    if (this.features.find((v) => v == "execution_costv2") == undefined) {
-      throw "server not implemented!"
+    const func = "execution_costv2"
+    if (this.features.find((v) => v == func) == undefined) {
+      throw new NotImplementedError(func)
     }
     let resp = await this.fetch({
-      method: 'execution_costv2',
+      method: func,
       params: Object.values(params),
       jsonrpc: '2.0',
       id: 1,
@@ -188,11 +232,12 @@ export class Client {
   }
 
   async decrypt_records(params: DecryptRecordsParams) {
-    if (this.features.find((v) => v == "decrypt_records") == undefined) {
-      throw "server not implemented!"
+    const func = "decrypt_recordsv2"
+    if (this.features.find((v) => v == func) == undefined) {
+      throw new NotImplementedError(func)
     }
     let resp = await this.fetch({
-      method: 'decrypt_records',
+      method: func,
       params: Object.values(params),
       jsonrpc: '2.0',
       id: 1,
@@ -201,11 +246,12 @@ export class Client {
   }
 
   async transaction_from_authorization(params: TransactionFromAuthorizationParams) {
-    if (this.features.find((v) => v == "transaction_from_authorization") == undefined) {
-      throw "server not implemented!"
+    const func = "transaction_from_authorization"
+    if (this.features.find((v) => v == func) == undefined) {
+      throw new NotImplementedError(func)
     }
     let resp = await this.fetch({
-      method: 'transaction_from_authorization',
+      method: func,
       params: Object.values(params),
       jsonrpc: '2.0',
       id: 1,
@@ -214,11 +260,26 @@ export class Client {
   }
 
   async deploy_from_authorization(params: DeployFromAuthorizationParams) {
-    if (this.features.find((v) => v == "deploy_from_authorization") == undefined) {
-      throw "server not implemented!"
+    const func = "deploy_from_authorization"
+    if (this.features.find((v) => v == func) == undefined) {
+      throw new NotImplementedError(func)
     }
     let resp = await this.fetch({
-      method: 'deploy_from_authorization',
+      method: func,
+      params: Object.values(params),
+      jsonrpc: '2.0',
+      id: 1,
+    });
+    return resp.json();
+  }
+
+  async update(params: UpdateParams) {
+    const func = "update"
+    if (this.features.find((v) => v == func) == undefined) {
+      throw new NotImplementedError(func)
+    }
+    let resp = await this.fetch({
+      method: func,
       params: Object.values(params),
       jsonrpc: '2.0',
       id: 1,

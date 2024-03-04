@@ -153,10 +153,6 @@ async fn main() {
                     .expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
             }
 
-            // #[cfg(target_os = "windows")]
-            // apply_blur(&window, Some((18, 18, 18, 125)))
-            //     .expect("Unsupported platform! 'apply_blur' is only supported on Windows");
-
             #[cfg(target_os = "windows")]
             if is_win11() {
                 apply_mica(&window, None)
@@ -286,26 +282,6 @@ async fn main() {
             },
             _ => {}
         })
-        .on_window_event(|event| match event.event() {
-            tauri::WindowEvent::CloseRequested { api, .. } => {
-                if event.window().label() == "main" {
-                    //prevent main window close
-                    #[allow(unused_unsafe)]
-                    #[cfg(not(target_os = "macos"))]
-                    {
-                        event.window().hide().unwrap();
-                    }
-
-                    #[allow(unused_unsafe)]
-                    #[cfg(target_os = "macos")]
-                    unsafe {
-                        tauri::AppHandle::hide(&event.window().app_handle()).unwrap();
-                    }
-                    api.prevent_close();
-                }
-            }
-            _ => {}
-        })
         .build(tauri::generate_context!())
         .expect("error while building tauri application");
 
@@ -346,29 +322,27 @@ fn is_another_instance_running(bundle_identifier: &str) -> Result<bool> {
 fn read_line_until_newline(
     reader: &mut dyn std::io::BufRead,
     buf: &mut String,
-) -> std::io::Result<usize> {
+) -> std::io::Result<()> {
     buf.clear();
-    let mut bytes_read = 0;
-    let mut byte_buf = [0; 4];
+    let mut byte_buf: [u8; 4] = [0; 4];
 
     loop {
         let num_bytes = reader.read(&mut byte_buf)?;
         if num_bytes == 0 {
             break;
         }
-        bytes_read += num_bytes;
 
         let line = String::from_utf8_lossy(&byte_buf[..num_bytes]);
         if let Some(newline_pos) = line.find('\n') {
             buf.push_str(&line[..newline_pos]);
             break;
-        } else if let Some(newline_pos) = line.find('\r') {
+        }
+        if let Some(newline_pos) = line.find('\r') {
             buf.push_str(&line[..newline_pos]);
             break;
-        } else {
-            buf.push_str(&line);
         }
+        buf.push_str(&line);
     }
 
-    Ok(bytes_read)
+    Ok(())
 }

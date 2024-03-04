@@ -79,3 +79,21 @@ pub fn error_dialog(message: &str) {
     );
     exit(1)
 }
+
+pub fn update_dialog(version: &str) {
+    if dialog::blocking::confirm(
+        get_app_handle().get_window("main").as_ref(),
+        "Aleo acc update",
+        format!(
+            "version {} is required, current version is {}, click OK to download newer version",
+            version,
+            env!("CARGO_PKG_VERSION")
+        ),
+    ) {
+        let _ = tauri::api::shell::open(
+            &get_app_handle().shell_scope(),
+            "https://github.com/SoterHQ/aleo-acceleration-service/releases",
+            None,
+        );
+    }
+}

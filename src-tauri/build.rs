@@ -11,7 +11,7 @@ fn main() {
 
     println!("cargo:rustc-env=git_commit={}", git_commit);
 
-    let build_time = chrono::Utc::now().to_rfc3339();
+    let build_time = chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Secs,false);
 
     println!("cargo:rustc-env=build_time={}", build_time);
 }
