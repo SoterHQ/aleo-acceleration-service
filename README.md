@@ -1,5 +1,7 @@
 # Aleo Wallet & Acceleration Service
 
+## [Soter Discord](https://discord.gg/Z9EhXYvh)
+
 ## How to install
 
 ### 1. Install Soter Wallet
